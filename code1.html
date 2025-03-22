@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Utkarsh Sahu">
+
+<title>CS670 Project - Diabetes Risk Prediction</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="code1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="code1_files/libs/quarto-html/quarto.js"></script>
+<script src="code1_files/libs/quarto-html/popper.min.js"></script>
+<script src="code1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="code1_files/libs/quarto-html/anchor.min.js"></script>
+<link href="code1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="code1_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="code1_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="code1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="code1_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">CS670 Project - Diabetes Risk Prediction</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Utkarsh Sahu </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>I decided to to do my project on diabetes risk prediction. Diabetes is a major health condition affecting many people and is directly linked to serious conditions such as heart disease, strokes, and kidney failure. This makes addressing diabetes especially important.</p>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>For this project, I decided to use Diabetes Health Indicators Dataset from Kaggle. The dataset contains various health indicators and whether the person has diabetes or not. The dataset can be found <a href="https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset">here</a> or on UCI Machine Learning Repository <a href="https://archive.ics.uci.edu/dataset/891/cdc+diabetes+health+indicators">here</a>.</p>
+<p>This dataset is extracted from Behavioral Risk Factor Surveillance System (BRFSS), which is a national survey conducted by the Centers for Disease Control and Prevention (CDC) in the United States. The survey collects data on various health-related behaviors, chronic conditions, and use of preventive services among adults aged 18 years or older. The dataset includes information on demographics, health status, and diabetes-related indicators. This dataset extracted form 2015 survey. This dataset contains 21 predictors and has 253,680 records.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 1%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 80%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Variable</th>
+<th>Type</th>
+<th>Description</th>
+<th>Missing Values</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Diabetes_binary</td>
+<td>Target, Binary</td>
+<td>Diabetes status; 0 = No diabetes, 1 = Prediabetes or diabetes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>HighBP</td>
+<td>Feature, Binary</td>
+<td>High blood pressure; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>HighChol</td>
+<td>Feature, Binary</td>
+<td>High cholesterol; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>CholCheck</td>
+<td>Feature, Binary</td>
+<td>Checked cholesterol in past 5 years; 0 = NO, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>BMI</td>
+<td>Feature, Integer</td>
+<td>Body Mass Index</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Smoker</td>
+<td>Feature, Binary</td>
+<td>Smoked at least 100 cigarettes in lifetime; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Stroke</td>
+<td>Feature, Binary</td>
+<td>Ever had a stroke; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>HeartDiseaseorAttack</td>
+<td>Feature, Binary</td>
+<td>Coronary heart disease or myocardial infarction; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>PhysActivity</td>
+<td>Feature, Binary</td>
+<td>Engaged in physical activity in past 30 days (excluding work); 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>Fruits</td>
+<td>Feature, Binary</td>
+<td>Consumes fruit at least once per day; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>Veggies</td>
+<td>Feature, Binary</td>
+<td>Consumes vegetables at least once per day; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>HvyAlcoholConsump</td>
+<td>Feature, Binary</td>
+<td>Heavy alcohol consumption (men &gt;14 drinks/week, women &gt;7 drinks/week); 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>AnyHealthcare</td>
+<td>Feature, Binary</td>
+<td>Has any healthcare coverage; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>NoDocbcCost</td>
+<td>Feature, Binary</td>
+<td>Needed to see a doctor but did not due to cost; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td>GenHlth</td>
+<td>Feature, Integer</td>
+<td>General health rating; 1 = Excellent, 2 = Very good, 3 = Good, 4 = Fair, 5 = Poor</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>16</td>
+<td>MentHlth</td>
+<td>Feature, Integer</td>
+<td>Number of days mental health was not good in past 30 days; Scale: 1–30</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>17</td>
+<td>PhysHlth</td>
+<td>Feature, Integer</td>
+<td>Number of days physical health was not good in past 30 days; Scale: 1–30</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>18</td>
+<td>DiffWalk</td>
+<td>Feature, Binary</td>
+<td>Serious difficulty walking or climbing stairs; 0 = No, 1 = Yes</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>19</td>
+<td>Sex</td>
+<td>Feature, Binary</td>
+<td>Sex; 0 = Female, 1 = Male</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>20</td>
+<td>Age</td>
+<td>Feature, Integer</td>
+<td>Age category; 1 = 18–24, 2 = 25–29, 3 = 30–34, 4 = 35–39, 5 = 40–44, 6 = 45–49, 7 = 50–54, 8 = 55–59, 9 = 60–64, 10 = 65–69, 11 = 70–74, 12 = 75–79, 13 = 80 or older</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>21</td>
+<td>Education</td>
+<td>Feature, Integer</td>
+<td>Education level; 1 = Never attended school or only kindergarten, 2 = Grades 1–8, 3 = Grades 9–11, 4 = Grade 12 or GED, 5 = College 1–3 years, 6 = College 4+ years</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>22</td>
+<td>Income</td>
+<td>Feature, Integer</td>
+<td>Household income level; 1 = Less than $10,000, 2 = $10,000 to &lt;$15,000, 3 = $15,000 to &lt;$20,000, 4 = $20,000 to &lt;$25,000, 5 = $25,000 to &lt;$35,000, 6 = $35,000 to &lt;$50,000, 7 = $50,000 to &lt;$75,000, 8 = $75,000 or more</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>Diabetes_binary is the target variable. It is a binary variable indicating whether a person has diabetes or not. 0 indicates no diabetes and 1 indicates prediabetes or diabetes.</p>
+<p>For this project, GenHlth, Age, Education and Income are categorical ordinal features; BMI, MentHlth and PhysHlth are continuous features; and all other features are binary.</p>
+</section>
+<section id="flow-of-this-report" class="level2">
+<h2 class="anchored" data-anchor-id="flow-of-this-report">Flow of this Report</h2>
+<p>This report will start with various questions I tried to look into and answer. Each question will contain the results, and some analysis as well as discussion of the process and results. Then, there will be an “Impact” section to discuss the potential impact of this work. Finally, there will be conclusion section to summarize the main results od the project.</p>
+</section>
+<section id="questions" class="level2">
+<h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<p>Diabetes risk prediction involves not only modeling techniques but also understanding the underlying relationships in the data. In this section, I outline specific research questions and hypotheses that guide my analysis. I explore how different health and demographic indicators (such as BMI, physical and mental health, and socioeconomic factors) are related to diabetes status, evaluate the performance of various classification models, and assess the influence of potential confounders on the observed associations.</p>
+<section id="q1-how-are-different-predictors-distributed-across-the-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="q1-how-are-different-predictors-distributed-across-the-dataset">Q1) How are different predictors distributed across the dataset?</h3>
+<p>I start with exploring the distribution of different predictors in the dataset. This will help us understand the data better and identify any potential issues or patterns.</p>
+<p>These are as follows:</p>
+<p>First are the continuous varibales - BMI, MentHlth and PhysHlth.</p>
+<div id="cell-21" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(num_vars), figsize<span class="op">=</span>(<span class="dv">5</span> <span class="op">*</span> <span class="bu">len</span>(num_vars), <span class="dv">5</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, var <span class="kw">in</span> <span class="bu">enumerate</span>(num_vars):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    axes[i].hist(df[var].dropna(), bins<span class="op">=</span><span class="dv">30</span>, edgecolor<span class="op">=</span><span class="st">'k'</span>, color<span class="op">=</span><span class="st">'navy'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    axes[i].set_title(<span class="ss">f"Distribution of </span><span class="sc">{</span>var<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    axes[i].set_xlabel(var)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    axes[i].set_ylabel(<span class="st">"Frequency"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    axes[i].grid(axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.75</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The BMI (Body Mass Index) histogram reveals that most individuals have a BMI in the range of 20–40, with a noticeable peak around 25–30, which corresponds to the overweight category. A few outliers with very high BMI values indicate cases of extreme obesity. In contrast, the distributions of MentHlth (Mental Health) and PhysHlth (Physical Health) are heavily skewed to the left. For MentHlth, which represents the number of days in the past 30 days when mental health was not good, the majority of individuals report zero days of poor mental health, with a smaller proportion experiencing higher values. Similarly, PhysHlth, which measures the number of days in the past 30 days when physical health was not good, shows a comparable left-skewed distribution, with most individuals reporting no issues and fewer individuals reporting higher values. These patterns highlight the variability in health indicators across the population, with a significant proportion of individuals reporting no mental or physical health issues, while others experience more frequent challenges.</p>
+<p>Second are the categorical ordinal variables - GenHlth, Age, Education and Income.</p>
+<div id="cell-25" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>num_vars <span class="op">=</span> <span class="bu">len</span>(ordinal_vars)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> (num_vars <span class="op">//</span> <span class="dv">2</span>) <span class="op">+</span> (num_vars <span class="op">%</span> <span class="dv">2</span>)  </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(rows, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, rows <span class="op">*</span> <span class="dv">5</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> num_vars <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    axes <span class="op">=</span> [axes]  </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    axes <span class="op">=</span> axes.flatten()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, var <span class="kw">in</span> <span class="bu">enumerate</span>(ordinal_vars):</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    counts <span class="op">=</span> df[var].value_counts().sort_index()</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    counts.plot(kind<span class="op">=</span><span class="st">'bar'</span>, ax<span class="op">=</span>axes[i], color<span class="op">=</span><span class="st">'skyblue'</span>, edgecolor<span class="op">=</span><span class="st">'k'</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    axes[i].set_title(<span class="ss">f"Distribution of </span><span class="sc">{</span>var<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    axes[i].set_xlabel(var)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    axes[i].set_ylabel(<span class="st">"Count"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    axes[i].set_xticklabels(counts.index, rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    axes[i].grid(axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.75</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i <span class="op">+</span> <span class="dv">1</span>, <span class="bu">len</span>(axes)):</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    fig.delaxes(axes[j])</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>GenHlth:</strong> The distribution of General Health (GenHlth) shows that a significant portion of individuals rate their health as “Very good” or “Good,” with fewer individuals rating it as “Excellent,” “Fair,” or “Poor.” This suggests that while many individuals perceive their health positively, there is still a notable proportion who may be experiencing health challenges.</p>
+<p><strong>Age:</strong> The age distribution indicates that the dataset includes a wide range of age groups. The bar chart shows a gradual rise in frequency from category 1 (18–24) through the middle age groups (around categories 7–9) and then a tapering off for older categories. This pattern suggests that the dataset has more individuals in middle to slightly older age ranges.</p>
+<p><strong>Education:</strong> The distribution is heavily skewed toward higher education levels, with categories 5 (some college) and 6 (college graduate) being the most common. Meanwhile, the lower education categories (1–3) have relatively few respondents, implying a generally well-educated sample.</p>
+<p><strong>Income:</strong> The bar chart shows that although there are respondents across all eight income levels, there is a noticeable shift toward higher income brackets, with category 8 (≥ $75,000) having the largest count. This suggests a skew toward more affluent individuals in the dataset.</p>
+<p>Third are the binary variables - remaning variables.</p>
+<div id="cell-28" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">4</span>, <span class="dv">4</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">16</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>axes <span class="op">=</span> axes.flatten()  </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>binary_summary <span class="op">=</span> []</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>color_map <span class="op">=</span> {<span class="dv">0</span>: <span class="st">'lightblue'</span>, <span class="dv">1</span>: <span class="st">'darksalmon'</span>}</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, var <span class="kw">in</span> <span class="bu">enumerate</span>(binary_vars):</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    counts <span class="op">=</span> df[var].value_counts().sort_index()  </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    percentages <span class="op">=</span> (counts <span class="op">/</span> df.shape[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span> </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    binary_summary.append({</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Variable"</span>: var,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Category_0_Count"</span>: counts.get(<span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Category_1_Count"</span>: counts.get(<span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Category_0_Percentage"</span>: <span class="ss">f"</span><span class="sc">{</span>percentages<span class="sc">.</span>get(<span class="dv">0</span>, <span class="dv">0</span>)<span class="sc">:.1f}</span><span class="ss">%"</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Category_1_Percentage"</span>: <span class="ss">f"</span><span class="sc">{</span>percentages<span class="sc">.</span>get(<span class="dv">1</span>, <span class="dv">0</span>)<span class="sc">:.1f}</span><span class="ss">%"</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    sorted_categories <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">1</span>]  </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    sorted_counts <span class="op">=</span> [counts.get(cat, <span class="dv">0</span>) <span class="cf">for</span> cat <span class="kw">in</span> sorted_categories] </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    sorted_colors <span class="op">=</span> [color_map[cat] <span class="cf">for</span> cat <span class="kw">in</span> sorted_categories]</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    axes[i].bar(sorted_categories, sorted_counts, color<span class="op">=</span>sorted_colors, edgecolor<span class="op">=</span><span class="st">'k'</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    axes[i].set_title(<span class="ss">f"Distribution of </span><span class="sc">{</span>var<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    axes[i].set_xlabel(var)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    axes[i].set_ylabel(<span class="st">"Count"</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    axes[i].set_xticks([<span class="dv">0</span>, <span class="dv">1</span>])  </span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    axes[i].set_xticklabels([<span class="st">"0"</span>, <span class="st">"1"</span>], rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> index, value <span class="kw">in</span> <span class="bu">enumerate</span>(sorted_counts):</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        axes[i].text(index, value, <span class="ss">f"</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> value <span class="op">/</span> df<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:.1f}</span><span class="ss">%"</span>, </span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>                     ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'bottom'</span>, fontsize<span class="op">=</span><span class="dv">10</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    axes[i].grid(axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.75</span>)</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i <span class="op">+</span> <span class="dv">1</span>, <span class="bu">len</span>(axes)):</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    fig.delaxes(axes[j])</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>binary_summary_df <span class="op">=</span> pd.DataFrame(binary_summary)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Most respondents (86.1%) do not have diabetes or prediabetes, leaving 13.9% who do — an important class imbalance to keep in mind, something which we will need to address later on. High blood pressure (42.9%) and high cholesterol (42.4%) are relatively common, while stroke (4.1%) and heart disease/attack (9.4%) are less frequent. A large majority (96.3%) have had their cholesterol checked within the past five years, and 95.1% report having some form of healthcare coverage. Interestingly, a substantial proportion (75.7%) report engaging in physical activity, yet only 63.4% consume fruit daily and 81.1% consume vegetables daily. Also notable is that 8.4% of respondents faced a situation where they needed to see a doctor but could not due to cost. Finally, the sex distribution is 56% female and 44% male, indicating a slightly higher representation of females.</p>
+</section>
+<section id="q2-prevalence-with-diabetes" class="level3">
+<h3 class="anchored" data-anchor-id="q2-prevalence-with-diabetes">Q2) Prevalence with Diabetes:</h3>
+</section>
+<section id="q2.1-how-does-the-bmi-distribution-differ-between-those-with-diabetesprediabetes-and-those-without" class="level3">
+<h3 class="anchored" data-anchor-id="q2.1-how-does-the-bmi-distribution-differ-between-those-with-diabetesprediabetes-and-those-without">Q2.1) How does the BMI distribution differ between those with diabetes/prediabetes and those without?</h3>
+<p>To answer this question, I plotted the distribution of BMI for both groups - those with diabetes/prediabetes and those without.</p>
+<div id="cell-34" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plt.hist(df[df[<span class="st">'Diabetes_binary'</span>] <span class="op">==</span> <span class="dv">0</span>][<span class="st">'BMI'</span>], bins<span class="op">=</span><span class="dv">30</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"No Diabetes"</span>, color<span class="op">=</span><span class="st">'blue'</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>plt.hist(df[df[<span class="st">'Diabetes_binary'</span>] <span class="op">==</span> <span class="dv">1</span>][<span class="st">'BMI'</span>], bins<span class="op">=</span><span class="dv">30</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"Diabetes/Prediabetes"</span>, color<span class="op">=</span><span class="st">'red'</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"BMI Histogram by Diabetes Status"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"BMI"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Count"</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-14-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this figure, the x-axis represents the BMI values, while the y-axis represents the count of individuals. There is a slight overlap of individuals with diabetes/prediabetes (in red) with individuals with no diabetes with in the lower to mid range of BMI. However, as we move to higher BMI values, there is a a greater proportion of the diabetes/prediabetes group appears in the overweight and obese ranges. This observation is consistent with the known association between higher BMI and increased diabetes risk.</p>
+</section>
+<section id="q2.2-do-individuals-suffering-from-common-heart-conditions-like-high-blood-pressure-and-high-cholesterol-have-higher-prevalence-of-diabetes" class="level3">
+<h3 class="anchored" data-anchor-id="q2.2-do-individuals-suffering-from-common-heart-conditions-like-high-blood-pressure-and-high-cholesterol-have-higher-prevalence-of-diabetes">Q2.2) Do individuals suffering from common heart conditions like high blood pressure and high cholesterol have higher prevalence of diabetes?</h3>
+<p>To explore diabetes prevalence in relation to high blood pressure and high cholesterol, I grouped the dataset by HighBP and HighChol (0 = no condition, 1 = condition), then calculated the proportion of individuals with diabetes/prediabetes in each group. Finally, I created stacked bar charts to compare these proportions visually.</p>
+<div id="cell-38" class="cell">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-39" class="cell">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From these proportion bar charts, individuals with high blood pressure or high cholesterol show a higher share of diabetes/prediabetes compared to those without these conditions. In other words, among those reporting high blood pressure, a noticeably larger slice of the bar (orange) represents diabetes/prediabetes, and the same is true for those with high cholesterol. This aligns with well-established medical findings that high blood pressure and high cholesterol often co-occur with increased risk of diabetes.</p>
+</section>
+<section id="q2.3-how-does-the-prevalence-of-diabetes-vary-across-demographic-groups-different-age-groups-and-between-sexes-i.e.-males-and-females" class="level3">
+<h3 class="anchored" data-anchor-id="q2.3-how-does-the-prevalence-of-diabetes-vary-across-demographic-groups-different-age-groups-and-between-sexes-i.e.-males-and-females">Q2.3) How does the prevalence of diabetes vary across demographic groups (different age groups and between sexes i.e.&nbsp;males and females)?</h3>
+<p>(Note: dataset utilizes the ‘Sex’ variable, which is limited to binary categories of ‘male’ and ‘female’ based on biological sex. I am just using the values as they are in dataset. This categorization does not reflect the full spectrum of gender identities, including transgender, non-binary, and other gender diverse individuals. Therefore, interpretations of this data should be made with caution, recognizing the inherent limitations of this binary classification system.)</p>
+<p>To examine how diabetes prevalence differs by age group and by sex, I first grouped the dataset by the “Age” variable (categorized into 13 levels) and calculated the proportion of individuals with diabetes or prediabetes in each category. I then did a similar grouping by “Sex” (0 = female, 1 = male) to compare prevalence between these two groups. Finally, I visualized these comparisons with stacked bar charts and used a crosstab to highlight the proportions in each demographic category.</p>
+<div id="cell-43" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> pd.crosstab(df[<span class="st">'Age'</span>], df[<span class="st">'Diabetes_binary'</span>])</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>counts_norm <span class="op">=</span> counts.div(counts.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> counts_norm.plot(kind<span class="op">=</span><span class="st">'bar'</span>, stacked<span class="op">=</span><span class="va">True</span>, edgecolor<span class="op">=</span><span class="st">'k'</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribution of Age by Diabetes Status"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Age"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter(<span class="fl">1.0</span>))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.legend(</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Diabetes_binary"</span>, </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>[<span class="st">"No Diabetes"</span>, <span class="st">"Diabetes/Prediabetes"</span>], </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.15</span>),  </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    loc<span class="op">=</span><span class="st">'upper center'</span>,  </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    ncol<span class="op">=</span><span class="dv">2</span>  </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From the age-group chart, the proportion of individuals with diabetes/prediabetes (orange) increases as the age category rises. This suggests that diabetes prevalence grows more pronounced in older age groups, aligning with CDC Diabetes Risk Factors stating age of 45 and older as a risk factor. It is most prevalent age groups of 65+.</p>
+<div id="cell-45" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ct <span class="op">=</span> pd.crosstab(df[<span class="st">'Sex'</span>], df[<span class="st">'Diabetes_binary'</span>])</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Crosstab of Sex and Diabetes_binary:"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ct)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ct_norm <span class="op">=</span> ct.div(ct.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>ct_norm.plot(kind<span class="op">=</span><span class="st">'bar'</span>, stacked<span class="op">=</span><span class="va">True</span>, edgecolor<span class="op">=</span><span class="st">'k'</span>, color<span class="op">=</span>[<span class="st">'skyblue'</span>, <span class="st">'salmon'</span>])</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Proportion of Diabetes by Sex"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Sex (0 = Female, 1 = Male)"</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter(<span class="fl">1.0</span>))</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">"Diabetes Status"</span>, labels<span class="op">=</span>[<span class="st">"No Diabetes"</span>, <span class="st">"Diabetes/Prediabetes"</span>])</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">'y'</span>, alpha<span class="op">=</span><span class="fl">0.75</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Crosstab of Sex and Diabetes_binary:
+Diabetes_binary     0.0    1.0
+Sex                           
+0.0              123563  18411
+1.0               94771  16935</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-18-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From the bar chart and crosstab, there is a slightly higher share of diabetes/prediabetes among males compared to females. Specifically, about 15% of females and around 17.86% of males have diabetes/prediabetes in this dataset. This is a relatvely small difference, but it is still notable.</p>
+</section>
+<section id="q2.4-what-proportion-of-individuals-in-each-self-rated-general-health-category-have-diabetes-or-prediabetes" class="level3">
+<h3 class="anchored" data-anchor-id="q2.4-what-proportion-of-individuals-in-each-self-rated-general-health-category-have-diabetes-or-prediabetes">Q2.4) What proportion of individuals in each self-rated general health category have diabetes (or prediabetes)?</h3>
+<p>I analyzed the GenHlth variable by creating a normalized crosstab with diabetes status and then visualized the proportions using a stacked bar chart. This allowed me to see if poorer self-rated health is associated with higher diabetes prevalence.</p>
+<div id="cell-49" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> pd.crosstab(df[<span class="st">'GenHlth'</span>], df[<span class="st">'Diabetes_binary'</span>])</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>counts_norm <span class="op">=</span> counts.div(counts.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> counts_norm.plot(kind<span class="op">=</span><span class="st">'bar'</span>, stacked<span class="op">=</span><span class="va">True</span>, edgecolor<span class="op">=</span><span class="st">'k'</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribution of GenHlth by Diabetes Status"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"GenHlth"</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion"</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter(<span class="fl">1.0</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>plt.legend(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Diabetes_binary"</span>, </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>[<span class="st">"No Diabetes"</span>, <span class="st">"Diabetes/Prediabetes"</span>], </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.15</span>),  </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    loc<span class="op">=</span><span class="st">'upper center'</span>,  </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    ncol<span class="op">=</span><span class="dv">2</span>  </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-19-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The stacked bar chart comparing self-rated general health (GenHlth) to diabetes status reveals a clear trend: as the self-rated health deteriorates from “Excellent” to “Poor,” the proportion of individuals with diabetes or prediabetes increases. In other words, individuals who rate their health as “Fair” or “Poor” tend to have a higher prevalence of diabetes.</p>
+</section>
+<section id="q2.5-how-does-the-proportion-of-diabetesprediabetes-vary-across-different-socioeconomic-factors-like-levels-of-education-and-income" class="level3">
+<h3 class="anchored" data-anchor-id="q2.5-how-does-the-proportion-of-diabetesprediabetes-vary-across-different-socioeconomic-factors-like-levels-of-education-and-income">Q2.5) How does the proportion of diabetes/prediabetes vary across different socioeconomic factors like levels of education and income?</h3>
+<p>I addressed this by generating normalized crosstabs for both Income and Education against diabetes status, then plotting them as stacked bar charts. These visualizations illustrate how diabetes prevalence varies across different socioeconomic levels.</p>
+<div id="cell-53" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> pd.crosstab(df[<span class="st">'Education'</span>], df[<span class="st">'Diabetes_binary'</span>])</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>counts_norm <span class="op">=</span> counts.div(counts.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> counts_norm.plot(kind<span class="op">=</span><span class="st">'bar'</span>, stacked<span class="op">=</span><span class="va">True</span>, edgecolor<span class="op">=</span><span class="st">'k'</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribution of Education by Diabetes Status"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Education"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter(<span class="fl">1.0</span>))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.legend(</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Diabetes_binary"</span>, </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>[<span class="st">"No Diabetes"</span>, <span class="st">"Diabetes/Prediabetes"</span>], </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.15</span>),  </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    loc<span class="op">=</span><span class="st">'upper center'</span>,  </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    ncol<span class="op">=</span><span class="dv">2</span>  </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The visualization for education shows that lower levels of educational attainment are linked to a higher proportion of diabetes cases. In the chart, the categories representing the lowest levels of education exhibit a larger orange segment (indicating diabetes or prediabetes) compared to higher education categories. This pattern implies that individuals with less education might face higher diabetes risk, potentially due to factors such as limited access to health information or resources that promote healthier lifestyles.</p>
+<div id="cell-55" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> pd.crosstab(df[<span class="st">'Income'</span>], df[<span class="st">'Diabetes_binary'</span>])</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>counts_norm <span class="op">=</span> counts.div(counts.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> counts_norm.plot(kind<span class="op">=</span><span class="st">'bar'</span>, stacked<span class="op">=</span><span class="va">True</span>, edgecolor<span class="op">=</span><span class="st">'k'</span>, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribution of Income by Diabetes Status"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Income"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>plt.gca().yaxis.set_major_formatter(mtick.PercentFormatter(<span class="fl">1.0</span>))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.legend(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Diabetes_binary"</span>, </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>[<span class="st">"No Diabetes"</span>, <span class="st">"Diabetes/Prediabetes"</span>], </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.15</span>),  </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    loc<span class="op">=</span><span class="st">'upper center'</span>,  </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    ncol<span class="op">=</span><span class="dv">2</span>  </span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-21-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Similarly, the income chart indicates that diabetes prevalence is higher among individuals in the lower income brackets. The stacked bar chart demonstrates that as household income increases, the share of individuals with diabetes or prediabetes generally declines. This suggests that lower socioeconomic status, as reflected by income, is associated with an increased risk of diabetes, possibly due to disparities in access to healthcare, nutritional quality, or lifestyle choices.</p>
+</section>
+<section id="q3-how-are-predictors-correlated-among-themselves-and-with-diabetes-status" class="level3">
+<h3 class="anchored" data-anchor-id="q3-how-are-predictors-correlated-among-themselves-and-with-diabetes-status">Q3) How are predictors correlated among themselves and with diabetes status?</h3>
+<p>I began by computing a full correlation matrix that included all predictors along with the diabetes_binary outcome. I then visualized these correlations using a heatmap to easily identify both the magnitude and direction of relationships among variables.</p>
+<div id="cell-59" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> plt.imshow(full_corr_matrix, cmap<span class="op">=</span><span class="st">'RdYlGn'</span>, interpolation<span class="op">=</span><span class="st">'none'</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>plt.colorbar(im, fraction<span class="op">=</span><span class="fl">0.046</span>, pad<span class="op">=</span><span class="fl">0.04</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>plt.xticks(<span class="bu">range</span>(<span class="bu">len</span>(full_corr_matrix.columns)), full_corr_matrix.columns, rotation<span class="op">=</span><span class="dv">90</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>plt.yticks(<span class="bu">range</span>(<span class="bu">len</span>(full_corr_matrix.columns)), full_corr_matrix.columns)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Full Correlation Matrix for All Variables"</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(full_corr_matrix.columns)):</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(full_corr_matrix.columns)):</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        plt.text(j, i, <span class="ss">f"</span><span class="sc">{</span>full_corr_matrix<span class="sc">.</span>iloc[i, j]<span class="sc">:.2f}</span><span class="ss">"</span>, </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                 ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>, color<span class="op">=</span><span class="st">"black"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-22-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The analysis revealed that traditional risk factors—such as high blood pressure (r ≈ 0.263), high cholesterol (r ≈ 0.200), and BMI (r ≈ 0.217)—are moderately positively correlated with diabetes, which supports their established roles in elevating diabetes risk. Lifestyle factors also emerged as important; for example, physical activity exhibited a negative correlation (r ≈ -0.118) with diabetes, suggesting a protective effect, while general health (GenHlth) was positively correlated (r ≈ 0.294), indicating that poorer self-rated health is associated with higher diabetes prevalence.</p>
+<p>Socioeconomic variables like Education and Income showed inverse correlations with diabetes (r ≈ -0.124 and r ≈ -0.164, respectively), implying that lower educational attainment and income levels are linked with higher diabetes risk. Furthermore, these socioeconomic factors were positively related to healthier lifestyle behaviors; higher levels of education and income were associated with increased consumption of fruits and vegetables and better general health metrics. This aligns with existing literature suggesting that higher socioeconomic status often enables better access to nutritious foods and healthcare services.</p>
+<p>It is important to note that the relatively low correlation numbers likely reflect the multifactorial nature of diabetes. The complexity of health outcomes means that no single predictor can explain a large proportion of the variance on its own. Moreover, measurement error and the inherent variability in self-reported data can further dampen these relationships. Overall, these low-to-moderate correlation values suggest that while each factor contributes to the risk profile for diabetes, they do so in a collective and interrelated manner, underscoring the need for multivariable analyses to capture the full interplay of these diverse influences.</p>
+</section>
+<section id="q4-what-predictors-are-potential-confounders" class="level3">
+<h3 class="anchored" data-anchor-id="q4-what-predictors-are-potential-confounders">Q4) What predictors are potential confounders?</h3>
+<p>I began by applying the change in estimate method to systematically identify potential confounders and important features among all predictors. In my code, I looped over each exposure variable and first fitted a crude logistic regression model predicting diabetes status, then adjusted for each candidate confounder one at a time. By computing the percentage change in the odds ratio (OR) for the primary predictor when including each candidate, I was able to flag those variables that caused a change of at least 15% in the estimate as meaningful confounders.</p>
+<p>This approach not only helped isolate confounders that bias the association between each exposure and diabetes, but it also provided insight into the importance of certain features. A substantial change in the OR indicates that the candidate variable has a notable impact on the relationship, suggesting that it is an important factor in the model.</p>
+<p>I opted for a 15% threshold—a mid-range value within the commonly used 10% to 20% range—to balance sensitivity and specificity in identifying relevant confounders. Although this cutoff is somewhat arbitrary and may overlook variables with more subtle effects, it serves as a practical compromise, particularly given my limited background in medical data analysis.</p>
+<p>Following is the result:</p>
+<div id="cell-65" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> var_formula(var, df):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(df[var].dtype, pd.CategoricalDtype) <span class="kw">or</span> df[var].dtype <span class="op">==</span> <span class="bu">object</span>:</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"C(</span><span class="sc">{</span>var<span class="sc">}</span><span class="ss">)"</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> var</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_coef(model, var, df):</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> (<span class="bu">isinstance</span>(df[var].dtype, pd.CategoricalDtype) <span class="kw">or</span> df[var].dtype <span class="op">==</span> <span class="bu">object</span>):</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> model.params[var]</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        candidate_keys <span class="op">=</span> [key <span class="cf">for</span> key <span class="kw">in</span> model.params.index <span class="cf">if</span> key.startswith(<span class="ss">f"C(</span><span class="sc">{</span>var<span class="sc">}</span><span class="ss">)"</span>)]</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(candidate_keys) <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> model.params[candidate_keys[<span class="dv">0</span>]]</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="bu">len</span>(candidate_keys) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>           </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> model.params[candidate_keys[<span class="dv">0</span>]]</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">KeyError</span>(<span class="ss">f"Coefficient for variable </span><span class="sc">{</span>var<span class="sc">}</span><span class="ss"> not found."</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>outcome <span class="op">=</span> <span class="st">"Diabetes_binary"</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>df[outcome] <span class="op">=</span> pd.to_numeric(df[outcome], errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> <span class="dv">15</span> </span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>all_vars <span class="op">=</span> df.columns.tolist()</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>exposure_vars <span class="op">=</span> [var <span class="cf">for</span> var <span class="kw">in</span> all_vars <span class="cf">if</span> var <span class="op">!=</span> outcome]</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>model_results <span class="op">=</span> {}</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> exposure <span class="kw">in</span> exposure_vars:</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">===================================="</span>)</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Evaluating exposure: </span><span class="sc">{</span>exposure<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"===================================="</span>)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    exposure_formula <span class="op">=</span> var_formula(exposure, df)</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>    crude_formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>outcome<span class="sc">}</span><span class="ss"> ~ </span><span class="sc">{</span>exposure_formula<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>        model_crude <span class="op">=</span> smf.logit(crude_formula, data<span class="op">=</span>df).fit(disp<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error fitting crude model for </span><span class="sc">{</span>exposure<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>        coef_crude <span class="op">=</span> extract_coef(model_crude, exposure, df)</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error extracting coefficient for </span><span class="sc">{</span>exposure<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    or_crude <span class="op">=</span> np.exp(coef_crude)</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Crude OR for </span><span class="sc">{</span>exposure<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>or_crude<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>    candidate_confounders <span class="op">=</span> [var <span class="cf">for</span> var <span class="kw">in</span> all_vars <span class="cf">if</span> var <span class="kw">not</span> <span class="kw">in</span> [outcome, exposure]]</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>    conf_results <span class="op">=</span> []</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> conf <span class="kw">in</span> candidate_confounders:</span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>        conf_formula <span class="op">=</span> var_formula(conf, df)</span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>        formula_adj <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>outcome<span class="sc">}</span><span class="ss"> ~ </span><span class="sc">{</span>exposure_formula<span class="sc">}</span><span class="ss"> + </span><span class="sc">{</span>conf_formula<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>            model_adj <span class="op">=</span> smf.logit(formula_adj, data<span class="op">=</span>df).fit(disp<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>            coef_adj <span class="op">=</span> extract_coef(model_adj, exposure, df)</span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>            or_adj <span class="op">=</span> np.exp(coef_adj)</span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>            percent_change <span class="op">=</span> <span class="bu">abs</span>((or_adj <span class="op">-</span> or_crude) <span class="op">/</span> or_crude) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>            conf_results.append({</span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>                <span class="st">"confounder"</span>: conf,</span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>                <span class="st">"adj_OR"</span>: or_adj,</span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>                <span class="st">"percent_change"</span>: percent_change</span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Adding </span><span class="sc">{</span>conf<span class="sc">}</span><span class="ss">: adjusted OR = </span><span class="sc">{</span>or_adj<span class="sc">:.3f}</span><span class="ss">, percent change = </span><span class="sc">{</span>percent_change<span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Error with </span><span class="sc">{</span>conf<span class="sc">}</span><span class="ss"> for exposure </span><span class="sc">{</span>exposure<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>    conf_results_df <span class="op">=</span> pd.DataFrame(conf_results)</span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> conf_results_df.empty:</span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>        conf_results_df <span class="op">=</span> conf_results_df.sort_values(by<span class="op">=</span><span class="st">"percent_change"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"No valid candidate confounders found."</span>)</span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>    selected <span class="op">=</span> conf_results_df[conf_results_df[<span class="st">'percent_change'</span>] <span class="op">&gt;=</span> threshold]</span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>    selected_confounders <span class="op">=</span> <span class="bu">list</span>(selected[<span class="st">'confounder'</span>])</span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(selected_confounders) <span class="op">&gt;</span> <span class="dv">3</span>:</span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>        selected_confounders <span class="op">=</span> <span class="bu">list</span>(selected[<span class="st">'confounder'</span>].iloc[:<span class="dv">3</span>])</span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> selected_confounders:</span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Selected confounders for </span><span class="sc">{</span>exposure<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>selected_confounders<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"No confounders met the </span><span class="sc">{</span>threshold<span class="sc">}</span><span class="ss">% threshold for </span><span class="sc">{</span>exposure<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>    confounder_formulas <span class="op">=</span> [var_formula(conf, df) <span class="cf">for</span> conf <span class="kw">in</span> selected_confounders]</span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a>    final_formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>outcome<span class="sc">}</span><span class="ss"> ~ </span><span class="sc">{</span>exposure_formula<span class="sc">}</span><span class="ss"> + "</span> <span class="op">+</span> <span class="st">" + "</span>.join(confounder_formulas)</span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a>        model_final <span class="op">=</span> smf.logit(final_formula, data<span class="op">=</span>df).fit(disp<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a>        final_coef <span class="op">=</span> extract_coef(model_final, exposure, df)</span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a>        final_adj_OR <span class="op">=</span> np.exp(final_coef)</span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Final adjusted OR for </span><span class="sc">{</span>exposure<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>final_adj_OR<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error fitting final model for </span><span class="sc">{</span>exposure<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a>    model_results[exposure] <span class="op">=</span> {</span>
+<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a>        <span class="st">"crude_OR"</span>: or_crude,</span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a>        <span class="st">"adjusted_OR"</span>: final_adj_OR,</span>
+<span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a>        <span class="st">"selected_confounders"</span>: selected_confounders,</span>
+<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a>        <span class="st">"confounder_details"</span>: conf_results_df</span>
+<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> model_results:</span>
+<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a>    results_summary <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Exposure"</span>: exp,</span>
+<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Crude_OR"</span>: details[<span class="st">"crude_OR"</span>],</span>
+<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Adjusted_OR"</span>: details[<span class="st">"adjusted_OR"</span>],</span>
+<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Selected_Confounders"</span>: <span class="st">", "</span>.join(details[<span class="st">"selected_confounders"</span>])</span>
+<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb12-127"><a href="#cb12-127" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> exp, details <span class="kw">in</span> model_results.items()</span>
+<span id="cb12-128"><a href="#cb12-128" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb12-129"><a href="#cb12-129" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-130"><a href="#cb12-130" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\n</span><span class="st">Summary of Models (only exposures with selected confounders):"</span>)</span>
+<span id="cb12-131"><a href="#cb12-131" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(results_summary)</span>
+<span id="cb12-132"><a href="#cb12-132" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb12-133"><a href="#cb12-133" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">No exposures with selected confounders met the threshold."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-66" class="cell" data-execution_count="51">
+<div class="cell-output cell-output-display" data-execution_count="51">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Exposure</th>
+<th data-quarto-table-cell-role="th">Crude_OR</th>
+<th data-quarto-table-cell-role="th">Adjusted_OR</th>
+<th data-quarto-table-cell-role="th">Selected_Confounders</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>HighBP</td>
+<td>5.037547</td>
+<td>2.499203</td>
+<td>GenHlth, Age, HighChol</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>HighChol</td>
+<td>3.254605</td>
+<td>1.763082</td>
+<td>HighBP, GenHlth, Age</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>CholCheck</td>
+<td>6.428981</td>
+<td>3.425750</td>
+<td>HighBP, HighChol, Age</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Smoker</td>
+<td>1.419931</td>
+<td>1.086893</td>
+<td>GenHlth</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Stroke</td>
+<td>3.064858</td>
+<td>1.318259</td>
+<td>GenHlth, DiffWalk, HighBP</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>HeartDiseaseorAttack</td>
+<td>3.623253</td>
+<td>1.600384</td>
+<td>GenHlth, HighBP, DiffWalk</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>PhysActivity</td>
+<td>0.489970</td>
+<td>0.835867</td>
+<td>GenHlth, DiffWalk, PhysHlth</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>Fruits</td>
+<td>0.786947</td>
+<td>0.933178</td>
+<td>GenHlth</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>Veggies</td>
+<td>0.680131</td>
+<td>0.907062</td>
+<td>GenHlth, Income</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>AnyHealthcare</td>
+<td>1.265091</td>
+<td>1.254900</td>
+<td>Income, Age, Education</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>NoDocbcCost</td>
+<td>1.349423</td>
+<td>0.988636</td>
+<td>GenHlth, Age, Income</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>GenHlth</td>
+<td>2.988697</td>
+<td>2.420126</td>
+<td>HighBP</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>DiffWalk</td>
+<td>3.771072</td>
+<td>1.562871</td>
+<td>GenHlth, HighBP, PhysHlth</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
+<td>Sex</td>
+<td>1.199281</td>
+<td>1.380028</td>
+<td>Income</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The analysis compares crude and adjusted odds ratios (ORs) to show how confounders affect each predictor’s association with diabetes. For example, HighBP’s crude OR of 5.04 drops to 2.50 after adjusting for GenHlth, Age, and HighChol, indicating these factors explain much of its association with diabetes. Similarly, HighChol’s OR declines from 3.25 to 1.76 when accounting for HighBP, GenHlth, and Age, while CholCheck’s association is reduced from 6.43 to 3.43 after similar adjustments.</p>
+<p>Lifestyle factors also change: the OR for Smoker decreases from 1.42 to 1.09 after adjusting for GenHlth, suggesting its effect may be mediated by overall health. Stroke and HeartDiseaseorAttack show notable attenuation when confounders such as GenHlth, DiffWalk, and HighBP are included. Protective factors like PhysActivity see their OR move from 0.49 to 0.84, indicating that part of the protective effect is influenced by overall health and mobility. In contrast, AnyHealthcare remains relatively unchanged (≈1.25), while NoDocbcCost’s association disappears after adjustment.</p>
+</section>
+<section id="class-imabalance" class="level3">
+<h3 class="anchored" data-anchor-id="class-imabalance">Class Imabalance</h3>
+<p>The dataset has a class imbalance problem, with 86.1% of individuals not having diabetes and only 13.9% having diabetes or prediabetes. This is a common issue in medical datasets and can affect model performance. To address such imbalance, techniques like resampling are used. However, I discovered that choosing which resmapling method is used has big impact on the model performance. To analyze this, I used two different resampling methods - undersampling (Nearmiss method) and oversampling (SMOTE method).</p>
+<p>First modeling will be done for each method and performace of models analyzed. Then I will compare the results of the two methods.</p>
+</section>
+<section id="q5-what-features-should-be-selected-for-the-models" class="level3">
+<h3 class="anchored" data-anchor-id="q5-what-features-should-be-selected-for-the-models">Q5) What features should be selected for the models?</h3>
+<p>For feature selection, I considered pearson correlation of features with the target variable (diabetes_binary) along with the confofounders identifier earlier using change in estimate method. I also used SelectKbest method using mutual_info_classif method to select features. I used all three methods to select features for the model.</p>
+<p>Correlation of features with the target variable (diabetes_binary):</p>
+<div id="cell-70" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>corr_with_outcome <span class="op">=</span> full_corr_matrix[<span class="st">'Diabetes_binary'</span>].drop(<span class="st">'Diabetes_binary'</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>corr_with_outcome <span class="op">=</span> corr_with_outcome.sort_values()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>plt.barh(corr_with_outcome.index, corr_with_outcome.values, color<span class="op">=</span><span class="st">'slateblue'</span>, edgecolor<span class="op">=</span><span class="st">'k'</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Correlation with Diabetes_binary"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Predictor Correlations with Diabetes_binary"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">'x'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span><span class="dv">0</span>, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-25-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This bar chart of Pearson correlations with the diabetes_binary variable, GenHlth (general health rating) shows the strongest positive correlation, suggesting that poorer self-rated health is closely associated with diabetes. Other top positive correlates include HighBP (high blood pressure), DiffWalk (difficulty walking), BMI, and HighChol (high cholesterol), which aligns with established risk factors for diabetes. Age and HeartDiseaseorAttack also show moderate positive correlations, reflecting the increased risk in older populations and those with cardiovascular conditions.</p>
+<p>On the negative side, Income, Education, and PhysActivity have the most pronounced inverse correlations, indicating that higher socioeconomic status and regular physical activity are linked to lower diabetes prevalence. Similarly, Fruits and Veggies consumption display modest negative correlations, suggesting that healthier dietary habits may reduce the likelihood of diabetes. While correlation alone does not confirm causation, these patterns are consistent with known public health findings about lifestyle, socioeconomic factors, and the risk of diabetes.</p>
+<p>SelectKbest method using mutual_info_classif method:</p>
+<div id="cell-73" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>selector <span class="op">=</span> SelectKBest(score_func<span class="op">=</span>mutual_info_classif, k<span class="op">=</span><span class="st">'all'</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>selector.fit(X_train_res, y_train_res)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>feature_scores <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Feature'</span>: X_train_res.columns,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Score'</span>: selector.scores_</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>}).sort_values(by<span class="op">=</span><span class="st">'Score'</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Feature Scores:"</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(feature_scores)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Feature Scores:
+                 Feature     Score
+15               GenHlth  0.205718
+20                Income  0.182437
+16              DiffWalk  0.134891
+2               PhysHlth  0.134355
+19             Education  0.121653
+9           PhysActivity  0.103893
+0                    BMI  0.088905
+1               MentHlth  0.074783
+3                 HighBP  0.058359
+11               Veggies  0.055703
+8   HeartDiseaseorAttack  0.045758
+10                Fruits  0.041606
+14           NoDocbcCost  0.037710
+7                 Stroke  0.031082
+4               HighChol  0.029023
+6                 Smoker  0.024895
+13         AnyHealthcare  0.019341
+18                   Age  0.012412
+17                   Sex  0.009621
+5              CholCheck  0.008693
+12     HvyAlcoholConsump  0.003174</code></pre>
+</div>
+</div>
+<p><strong>Features selected:</strong></p>
+<p>selected_features = [“HighBP”, “HighChol”,“BMI”, “Smoker”, “Stroke”, “HeartDiseaseorAttack”, “PhysActivity”, ‘Education’, “GenHlth”, “MentHlth”, “PhysHlth”, ‘HvyAlcoholConsump’, “DiffWalk”, “Age”, “Income”]</p>
+</section>
+<section id="q6.1-which-predictive-models-perform-best-in-the-predicting-diabetes-status-with-nearmiss-method" class="level3">
+<h3 class="anchored" data-anchor-id="q6.1-which-predictive-models-perform-best-in-the-predicting-diabetes-status-with-nearmiss-method">Q6.1) Which predictive models perform best in the predicting diabetes status with Nearmiss method?</h3>
+<p>The Nearmiss technique is an undersampling method designed to tackle class imbalance by reducing the majority class down to a level closer to that of the minority class. Here, I applied Nearmiss to balance the dataset (13.9% diabetes vs.&nbsp;86.1% no diabetes) and then trained several models—including Logistic Regression, K-Nearest Neighbors (KNeighbors), Random Forest, XGBoost, and a Multi-Layer Perceptron (MLP)—to predict diabetes status.</p>
+<div id="cell-81" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, results <span class="kw">in</span> all_model_results.items():</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> results[<span class="st">"y_prob"</span>] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        fpr, tpr, _ <span class="op">=</span> roc_curve(y_test, results[<span class="st">"y_prob"</span>])</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        roc_auc <span class="op">=</span> results[<span class="st">"roc_auc"</span>]</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        plt.plot(fpr, tpr, label<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> (AUC = </span><span class="sc">{</span>roc_auc<span class="sc">:.2f}</span><span class="ss">)'</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], <span class="st">'k--'</span>, label<span class="op">=</span><span class="st">'Chance'</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"False Positive Rate"</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"True Positive Rate"</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"ROC Curves for All Models"</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"lower right"</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-31-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-82" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>summary_list <span class="op">=</span> []</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> model_name, results <span class="kw">in</span> all_model_results.items():</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    summary_list.append({</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Model"</span>: model_name,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Accuracy"</span>: results[<span class="st">"accuracy"</span>],</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Error Rate"</span>: results[<span class="st">"error_rate"</span>],</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"ROC AUC"</span>: results[<span class="st">"roc_auc"</span>]</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>results_summary_df <span class="op">=</span> pd.DataFrame(summary_list)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Advanced Model Performance Summary:"</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>results_summary_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Advanced Model Performance Summary:</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="158">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">Accuracy</th>
+<th data-quarto-table-cell-role="th">Error Rate</th>
+<th data-quarto-table-cell-role="th">ROC AUC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>LogisticRegression</td>
+<td>0.552369</td>
+<td>0.447631</td>
+<td>0.725268</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>KNeighbors</td>
+<td>0.558440</td>
+<td>0.441560</td>
+<td>0.672555</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>RandomForest</td>
+<td>0.448400</td>
+<td>0.551600</td>
+<td>0.693936</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>XGBoost</td>
+<td>0.454332</td>
+<td>0.545668</td>
+<td>0.673247</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>MLP</td>
+<td>0.464838</td>
+<td>0.535162</td>
+<td>0.661075</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>KNeighbors achieved the highest accuracy of approximately 55.8% with the lowest error rate (44.2%), suggesting that it performs well on raw classification; however, its moderate ROC AUC (around 0.673) indicates that its ability to distinguish between classes across various thresholds is limited. In contrast, Logistic Regression, with an accuracy of about 55.2%, obtained the highest ROC AUC of 0.725, meaning it excels at ranking individuals by risk despite a slightly lower overall accuracy.</p>
+<p>Ensemble methods such as Random Forest and XGBoost recorded lower accuracies (44.8% and 45.4%, respectively) with moderate AUC values (approximately 0.694 and 0.673), implying that while they capture some discriminative power, their performance suffers under undersampling due to the reduced majority-class information. The MLP model performed the weakest, with an accuracy near 46.5% and the lowest AUC of about 0.661, likely because neural networks require more data to generalize effectively.</p>
+<p>Overall, these results highlight the trade-offs involved in handling class imbalance: while KNeighbors offers a slight edge in accuracy, Logistic Regression demonstrates superior discriminative ability across thresholds, making it a strong candidate for predicting diabetes status under the Nearmiss method.</p>
+</section>
+<section id="q6.2-which-predictive-models-perform-best-in-the-predicting-diabetes-status-with-smote-method" class="level3">
+<h3 class="anchored" data-anchor-id="q6.2-which-predictive-models-perform-best-in-the-predicting-diabetes-status-with-smote-method">Q6.2) Which predictive models perform best in the predicting diabetes status with SMOTE method?</h3>
+<p>Using SMOTE to oversample the minority class, I trained the same set of models—Logistic Regression, KNeighbors, Random Forest, XGBoost, and MLP—to predict diabetes status. And here are the results:</p>
+<div id="cell-89" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, results <span class="kw">in</span> all_model_results.items():</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> results[<span class="st">"y_prob"</span>] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        fpr, tpr, _ <span class="op">=</span> roc_curve(y_test, results[<span class="st">"y_prob"</span>])</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        roc_auc <span class="op">=</span> results[<span class="st">"roc_auc"</span>]</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        plt.plot(fpr, tpr, label<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> (AUC = </span><span class="sc">{</span>roc_auc<span class="sc">:.2f}</span><span class="ss">)'</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], <span class="st">'k--'</span>, label<span class="op">=</span><span class="st">'Chance'</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"False Positive Rate"</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"True Positive Rate"</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"ROC Curves for All Models"</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"lower right"</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-36-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-90" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>summary_list <span class="op">=</span> []</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> model_name, results <span class="kw">in</span> all_model_results.items():</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    summary_list.append({</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Model"</span>: model_name,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Accuracy"</span>: results[<span class="st">"accuracy"</span>],</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Error Rate"</span>: results[<span class="st">"error_rate"</span>],</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"ROC AUC"</span>: results[<span class="st">"roc_auc"</span>]</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>results_summary_df2 <span class="op">=</span> pd.DataFrame(summary_list)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Advanced Model Performance Summary:"</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>results_summary_df2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Advanced Model Performance Summary:</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="197">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">Accuracy</th>
+<th data-quarto-table-cell-role="th">Error Rate</th>
+<th data-quarto-table-cell-role="th">ROC AUC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>LogisticRegression</td>
+<td>0.860809</td>
+<td>0.139191</td>
+<td>0.798648</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>KNeighbors</td>
+<td>0.847524</td>
+<td>0.152476</td>
+<td>0.439892</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>RandomForest</td>
+<td>0.853654</td>
+<td>0.146346</td>
+<td>0.718085</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>XGBoost</td>
+<td>0.774322</td>
+<td>0.225678</td>
+<td>0.717209</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>MLP</td>
+<td>0.596953</td>
+<td>0.403047</td>
+<td>0.643677</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Logistic Regression achieved the highest accuracy (approximately 86.1%) and the best ROC AUC (nearly 0.799), indicating that it not only classifies correctly most of the time but also distinguishes between individuals with and without diabetes effectively across all thresholds. Random Forest follows with a strong accuracy of about 85.4% and a respectable AUC (approximately 0.718), while XGBoost has a lower accuracy (77.4%) but a similar AUC (around 0.717), suggesting that although it ranks cases fairly well, it misses more overall classifications.</p>
+<p>KNeighbors, despite an accuracy of roughly 84.8%, suffers from a very low ROC AUC (approximately 0.440), which implies poor discrimination between classes when considering various thresholds. I think while the KNeighbors model achieves high accuracy due to its binary predictions based on a fixed threshold, its probability estimates may be poorly calibrated. With SMOTE oversampling, although the minority class is balanced, the local neighborhood structure can be distorted. This distortion may be caused due to the synthetic samples that are created between existing minority class samples, which can create artificial cluster.And this distortion may lead to confidence scores that do not effectively rank positive and negative cases, which in turn results in a low ROC AUC when the model’s performance is evaluated across various thresholds.</p>
+<p>The MLP model performs the worst in this setting, with an accuracy of only about 59.7% and an AUC of 0.644. Overall, these results indicate that Logistic Regression outperforms the other models under the SMOTE method, balancing both high accuracy and strong discriminative ability.</p>
+</section>
+<section id="q6.3-how-do-the-results-from-nearmiss-and-smote-methods-compare" class="level3">
+<h3 class="anchored" data-anchor-id="q6.3-how-do-the-results-from-nearmiss-and-smote-methods-compare">Q6.3) How do the results from Nearmiss and SMOTE methods compare?</h3>
+<p>When comparing the performance of models trained with Nearmiss (undersampling) versus SMOTE (oversampling), few key differences emerge.</p>
+<ul>
+<li>Nearmiss reduces majority class, potentially leading to loss of information. SMOTE creates synthetic samples, preserving majority class data.</li>
+<li>Nearmiss results in moderate accuracy (~55%) and ROC AUC (0.67–0.73), whereas SMOTE yields higher accuracy (~85%) but may lead to poorer ROC AUC for some models (e.g., KNeighbors with 0.44).</li>
+<li>The choice between Nearmiss and SMOTE reflects a trade-off between preserving natural data distribution (Nearmiss) and enhancing minority class representation (SMOTE), with the latter boosting accuracy at a fixed threshold but caution is needed for methods sensitive to local data structure (e.g., KNeighbors). Nearmiss is also more computationally efficient as it reduces dataset size.</li>
+</ul>
+</section>
+<section id="q7-do-the-models-perform-differently-across-different-income-levels" class="level3">
+<h3 class="anchored" data-anchor-id="q7-do-the-models-perform-differently-across-different-income-levels">Q7) Do the models perform differently across different income levels?</h3>
+<p>I decided to evaluate the performance of the models across different income levels. These were evaluated on the models trained using the Nearmiss method.</p>
+<p>Here are the results:</p>
+<div id="cell-96" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>income_groups <span class="op">=</span> <span class="bu">sorted</span>(X_test_sel[<span class="st">'Income'</span>].unique())</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Evaluating model performance by Income groups:"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> income <span class="kw">in</span> income_groups:</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    subgroup_mask <span class="op">=</span> X_test_sel[<span class="st">'Income'</span>] <span class="op">==</span> income</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    X_subgroup <span class="op">=</span> X_test_sel[subgroup_mask]</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    y_subgroup <span class="op">=</span> y_test[subgroup_mask]</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Income Group: </span><span class="sc">{</span>income<span class="sc">}</span><span class="ss"> (n = </span><span class="sc">{</span><span class="bu">len</span>(y_subgroup)<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, model <span class="kw">in</span> models.items():</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        y_pred <span class="op">=</span> model.predict(X_subgroup)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">hasattr</span>(model, <span class="st">"predict_proba"</span>):</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>            y_prob <span class="op">=</span> model.predict_proba(X_subgroup)[:, <span class="dv">1</span>]</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">len</span>(np.unique(y_subgroup)) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>                roc_auc <span class="op">=</span> roc_auc_score(y_subgroup, y_prob)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>                roc_auc <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>            roc_auc <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>        accuracy_val <span class="op">=</span> accuracy_score(y_subgroup, y_pred)</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> roc_auc <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: Accuracy = </span><span class="sc">{</span>accuracy_val<span class="sc">:.3f}</span><span class="ss">, ROC AUC = </span><span class="sc">{</span>roc_auc<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: Accuracy = </span><span class="sc">{</span>accuracy_val<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="cell-97" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>data_income <span class="op">=</span> {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Subgroup"</span>: [<span class="st">"Income_1"</span>] <span class="op">*</span> <span class="dv">5</span> <span class="op">+</span> [<span class="st">"Income_2"</span>] <span class="op">*</span> <span class="dv">5</span> <span class="op">+</span> [<span class="st">"Income_3"</span>] <span class="op">*</span> <span class="dv">5</span> <span class="op">+</span> [<span class="st">"Income_4"</span>] <span class="op">*</span> <span class="dv">5</span> <span class="op">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                [<span class="st">"Income_5"</span>] <span class="op">*</span> <span class="dv">5</span> <span class="op">+</span> [<span class="st">"Income_6"</span>] <span class="op">*</span> <span class="dv">5</span> <span class="op">+</span> [<span class="st">"Income_7"</span>] <span class="op">*</span> <span class="dv">5</span> <span class="op">+</span> [<span class="st">"Income_8"</span>] <span class="op">*</span> <span class="dv">5</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Model"</span>: [<span class="st">"LogisticRegression"</span>, <span class="st">"KNeighbors"</span>, <span class="st">"RandomForest"</span>, <span class="st">"XGBoost"</span>, <span class="st">"MLP"</span>] <span class="op">*</span> <span class="dv">8</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Accuracy"</span>: [</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.245</span>, <span class="fl">0.259</span>, <span class="fl">0.245</span>, <span class="fl">0.245</span>, <span class="fl">0.245</span>,  <span class="co"># Income group 1</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.271</span>, <span class="fl">0.318</span>, <span class="fl">0.271</span>, <span class="fl">0.271</span>, <span class="fl">0.271</span>,  <span class="co"># Income group 2</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.223</span>, <span class="fl">0.372</span>, <span class="fl">0.223</span>, <span class="fl">0.223</span>, <span class="fl">0.223</span>,  <span class="co"># Income group 3</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.195</span>, <span class="fl">0.495</span>, <span class="fl">0.195</span>, <span class="fl">0.195</span>, <span class="fl">0.195</span>,  <span class="co"># Income group 4</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.172</span>, <span class="fl">0.578</span>, <span class="fl">0.172</span>, <span class="fl">0.172</span>, <span class="fl">0.172</span>,  <span class="co"># Income group 5</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.373</span>, <span class="fl">0.655</span>, <span class="fl">0.194</span>, <span class="fl">0.194</span>, <span class="fl">0.142</span>,  <span class="co"># Income group 6</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.707</span>, <span class="fl">0.805</span>, <span class="fl">0.505</span>, <span class="fl">0.500</span>, <span class="fl">0.390</span>,  <span class="co"># Income group 7</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.914</span>, <span class="fl">0.899</span>, <span class="fl">0.828</span>, <span class="fl">0.822</span>, <span class="fl">0.795</span>   <span class="co"># Income group 8</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ROC_AUC"</span>: [</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.599</span>, <span class="fl">0.489</span>, <span class="fl">0.473</span>, <span class="fl">0.410</span>, <span class="fl">0.374</span>,  <span class="co"># Income group 1</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.584</span>, <span class="fl">0.457</span>, <span class="fl">0.459</span>, <span class="fl">0.455</span>, <span class="fl">0.422</span>,  <span class="co"># Income group 2</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.580</span>, <span class="fl">0.437</span>, <span class="fl">0.446</span>, <span class="fl">0.451</span>, <span class="fl">0.415</span>,  <span class="co"># Income group 3</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.567</span>, <span class="fl">0.424</span>, <span class="fl">0.429</span>, <span class="fl">0.432</span>, <span class="fl">0.415</span>,  <span class="co"># Income group 4</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.565</span>, <span class="fl">0.415</span>, <span class="fl">0.404</span>, <span class="fl">0.402</span>, <span class="fl">0.404</span>,  <span class="co"># Income group 5</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.570</span>, <span class="fl">0.426</span>, <span class="fl">0.407</span>, <span class="fl">0.406</span>, <span class="fl">0.408</span>,  <span class="co"># Income group 6</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.585</span>, <span class="fl">0.464</span>, <span class="fl">0.495</span>, <span class="fl">0.490</span>, <span class="fl">0.479</span>,  <span class="co"># Income group 7</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>        <span class="fl">0.637</span>, <span class="fl">0.496</span>, <span class="fl">0.630</span>, <span class="fl">0.630</span>, <span class="fl">0.618</span>   <span class="co"># Income group 8</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>df_income <span class="op">=</span> pd.DataFrame(data_income)</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>sns.barplot(data<span class="op">=</span>df_income, x<span class="op">=</span><span class="st">"Subgroup"</span>, y<span class="op">=</span><span class="st">"Accuracy"</span>, hue<span class="op">=</span><span class="st">"Model"</span>)</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Model Accuracy by Income Group"</span>)</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Accuracy"</span>)</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Income Group"</span>)</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">"Model"</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">1.05</span>, <span class="dv">1</span>), loc<span class="op">=</span><span class="st">'upper left'</span>)</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>sns.barplot(data<span class="op">=</span>df_income, x<span class="op">=</span><span class="st">"Subgroup"</span>, y<span class="op">=</span><span class="st">"ROC_AUC"</span>, hue<span class="op">=</span><span class="st">"Model"</span>)</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Model ROC AUC by Income Group"</span>)</span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"ROC AUC"</span>)</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Income Group"</span>)</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">"Model"</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">1.05</span>, <span class="dv">1</span>), loc<span class="op">=</span><span class="st">'upper left'</span>)</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-39-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="code1_files/figure-html/cell-39-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Lower Income Groups (1–4):</strong></p>
+<ul>
+<li><p>Accuracies are generally lower (around 0.17–0.27) and ROC AUC values hover near 0.56–0.60 for Logistic Regression, with other models sometimes near 0.5 (no better than chance).</p></li>
+<li><p>This suggests the models are less able to distinguish between classes for lower-income groups.</p></li>
+</ul>
+<p><strong>Middle to Higher Income Groups (5–8):</strong></p>
+<ul>
+<li><p>In Income Group 8, for example, Logistic Regression shows an accuracy of 0.914 with ROC AUC of 0.637, indicating better overall performance.</p></li>
+<li><p>Some models (like KNeighbors) show higher accuracy in some income groups (e.g., 0.805 in Group 7), though their ROC AUC remains around 0.46–0.50, which might indicate that while many predictions are “correct” under the given threshold, the ranking of risk isn’t particularly strong.</p></li>
+</ul>
+<p>Differential model performance across income groups can be attributed to several factors.</p>
+<ul>
+<li><p>First, the relationship between predictors and diabetes risk may vary by socioeconomic status; that is, the effect of a given predictor on the likelihood of diabetes might be stronger in one income group than another.</p></li>
+<li><p>Additionally, the prevalence of diabetes or prediabetes can differ substantially between groups, which in turn affects performance metrics like accuracy. For instance, a model might seem highly accurate in a subgroup with a dominant class even if its discrimination ability is limited.</p></li>
+<li><p>Lastly, the size of the subgroup plays a critical role: larger subgroups yield more reliable and stable performance estimates, while very small subgroups—such as Education Group 1 in this case—often lead to unstable metrics that make interpretation challenging.</p></li>
+</ul>
+</section>
+</section>
+<section id="impact" class="level2">
+<h2 class="anchored" data-anchor-id="impact">Impact</h2>
+<p>This project, while primarily driven by scientific curiosity, underscores the complex interplay of multiple factors in diabetes risk—demonstrating that no single predictor, such as dietary habits alone, dictates the onset of diabetes. The results do show that a more nuanced approach in both public health policy and clinical practice, prompting individuals and institutions to consider a broader array of risk factors rather than focusing solely on singular behaviors like eating habits. This comprehensive perspective could help reduce stigmatization, promote more targeted and empathetic interventions, and ultimately foster a better understanding of the multifactorial nature of diabetes risk among diverse populations.</p>
+</section>
+<section id="conclusion-summary" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion-summary">Conclusion Summary</h2>
+<p>The results of this project clearly indicate that diabetes risk cannot be reliably predicted by just one or two factors; rather, it emerges from a complex interplay of clinical, lifestyle, and socioeconomic determinants. Our analysis—through careful data preprocessing, feature selection, and predictive modeling—highlighted that while variables such as high blood pressure, high cholesterol, BMI, stroke history, and general health are important, they only form part of the risk profile. Socioeconomic factors like education and income also play a critical role, underscoring that diabetes is a multifactorial condition. These findings align closely with current public health guidelines for diabetes, which advocate for broad, comprehensive strategies that address a wide range of risk factors instead of attributing the disease to singular behaviors such as diet alone. This project not only supports a deeper understanding of diabetes risk but also emphasizes the importance of holistic, multi-dimensional public health interventions.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
