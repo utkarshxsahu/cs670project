@@ -1,0 +1,35 @@
+/* Ensure all figures, images, and plots scale to fit within the container */
+.quarto-figure img, .quarto-figure svg, .quarto-figure canvas {
+    max-width: 95% !important;  /* Ensures plot fits within page width */
+    height: auto !important;     /* Maintain aspect ratio */
+    display: block;
+    margin: auto;                /* Center align */
+}
+
+/* Prevent content overflow while keeping it visible */
+div.cell-output-display {
+    overflow-x: auto !important; /* Allow only slight horizontal scrolling if needed */
+    text-align: center;          /* Center the plot */
+}
+
+/* Ensure figures and subplots shrink proportionally instead of being cut */
+.figure {
+    max-width: 95% !important;
+    height: auto !important;
+    display: flex;
+    justify-content: center;
+}
+
+/* Avoid cutting large Matplotlib subplots */
+div.output pre {
+    overflow: visible !important;
+    white-space: normal !important;
+}
+
+/* Make sure Quarto figures are responsive */
+.fig-responsive {
+    max-width: 95% !important;
+    height: auto !important;
+    display: flex;
+    justify-content: center;
+}
